@@ -1,0 +1,13 @@
+{
+  "name": "subs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "subedit.js",
+  "type": "module",
+  "scripts": {
+    "dev": "deno run --allow-read --allow-net --allow-write subedit.ts ",
+    "download": "deno run --allow-read --allow-net --allow-write download.ts "
+  },
+  "author": "",
+  "license": "ISC"
+}
