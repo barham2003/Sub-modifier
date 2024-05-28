@@ -1,22 +1,31 @@
 import { Subtitle } from "./Subtitle.ts";
-import { generateLines, generateHeader } from "./lines.ts";
+import { SERIES } from "./constants.ts";
+import { ANIME_SERIES } from "./constants.ts";
+import { generateLines, generateHeader, generateMovedLogos } from "./lineGenerators.ts";
 
 export class MetaData {
     readonly starterLines: string;
     readonly endingLines: string;
     readonly header: string;
+    readonly movedLogos: string
 
     private readonly lines: string[];
 
     constructor(
         subtitle: Subtitle,
-        movieName: string,
+        itemName: string,
         translator: string,
-        technique: string
+        technique: string,
+        type: "anime-series" | "series" | "movie" = "movie",
+        seriesInfo?: string
     ) {
-        this.lines = generateLines(movieName, translator, technique);
-        this.header = generateHeader(movieName);
-
+        if (type === ANIME_SERIES || type === SERIES) {
+            this.lines = generateLines(type, itemName, translator, technique, seriesInfo);
+        } else {
+            this.lines = generateLines(type, itemName, translator, technique);
+        }
+        this.header = generateHeader(type, itemName);
+        this.movedLogos = generateMovedLogos(type);
         this.starterLines = this.generateStarterLines(subtitle.firstLineTime);
         this.endingLines = this.generateEndingLines(subtitle.lastLineTime);
     }
@@ -36,8 +45,7 @@ export class MetaData {
     }
 
     generateEndingLines(lastLineTime: number) {
-        let secondTimeCounter = 2;
-        console.log("THE TIME: ", formatTime(lastLineTime))
+        let secondTimeCounter = 0;
         const endLines = this.lines
             .map((line) => {
                 const startTime = formatTime(lastLineTime + secondTimeCounter);

@@ -33,7 +33,6 @@ export class Subtitle {
                 .filter((line) => line.match(/^[0-9]{2}:/));
             const subArray = theArray.map((line) => line.trim());
             const lastSub = subArray.at(-1)?.split("-->")[1].trim();
-            console.log(lastSub)
             const timeString = lastSub?.split(",")[0];
             if (!timeString) return 0;
             const [hours, minutes, seconds] = timeString.split(":").map(Number);
@@ -62,12 +61,19 @@ export class Subtitle {
             endTime: formatTimeToAss(match[3].replace(",", ".")),
             text: match[4].replace(/\n/g, "\\N").trim(),
         }));
+
+        // ? Start Converting
         const assBody = subtitles
             .map((sub) => {
                 return `Dialogue: 0,${sub.startTime},${sub.endTime},Default,,0,0,0,,${sub.text}`;
             })
-            .join("\n");
-
+            .join("\n")                     //? Join Them Together 
+            .replaceAll("<i>", "{\\i1}")    //? Start Replacing
+            .replaceAll("</i>", "{\\i0}")
+            .replace(/<font color="#([0-9a-fA-F]{6})">([\s\S]*?)<\/font>/g, (_, color, content) => {
+                const bgrColor = color.substring(4, 6) + color.substring(2, 4) + color.substring(0, 2);
+                return `{\\c&H${bgrColor}&}${content}`;
+            });
         return assBody + "\n";
     }
 }
