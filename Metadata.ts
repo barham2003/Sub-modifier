@@ -1,7 +1,7 @@
 import { Subtitle } from "./Subtitle.ts";
-import { SERIES } from "./constants.ts";
-import { ANIME_SERIES } from "./constants.ts";
-import { generateLines, generateHeader, generateMovedLogos } from "./lineGenerators.ts";
+import { SERIES } from "./lib/constants.ts";
+import { ANIME_SERIES } from "./lib/constants.ts";
+import { generateLines, generateHeader, generateMovedLogos } from "./lib/lineGenerators.ts";
 
 export class MetaData {
     readonly starterLines: string;

@@ -1,7 +1,7 @@
 //? ===============  Variable Declaration ===============
 import { MetaData } from "./Metadata.ts";
 import { Subtitle } from "./Subtitle.ts";
-import { encodeText } from "./helpers.ts";
+import { encodeText } from "./lib/utils.ts";
 //? =============== End of Variable Declaration ===============
 
 /*
