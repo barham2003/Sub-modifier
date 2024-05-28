@@ -10,12 +10,13 @@ const router = new Router();
 
 
 router.post("/", async (context) => {
+
+    context.response.status = 400
     const reqBody = await context.request.body.json();
     // ? URL, Name, Type, Translator, Technique, Series Info
 
     const notValid = !reqBody.name || !reqBody.translator || !reqBody.technique || !reqBody.type || !reqBody.corner
     const notValidType = reqBody.type !== SERIES && reqBody.type !== ANIME_SERIES && reqBody.type !== MOVIE
-
 
     if (notValid) return context.response.body = { status: "error", message: "Validation Error, Please fill all fields" }
     if (reqBody.type === SERIES && !reqBody.seriesInfo) return context.response.body = { status: "error", message: "There is no series info" }
@@ -23,6 +24,7 @@ router.post("/", async (context) => {
 
     const response = await fetch(reqBody.url);
     if (!response.ok) return context.response.body = { status: "error", message: "URL file not found, please try again" };
+
 
 
     const text = await response.text();
@@ -36,6 +38,8 @@ router.post("/", async (context) => {
     //* Combine all generated things together
     const all = header + starterLines + sub.assBody + endingLines + movedLogos
 
+
+    context.response.status = 200
     context.response.body = all
 });
 
