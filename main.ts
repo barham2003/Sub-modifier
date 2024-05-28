@@ -22,15 +22,6 @@ try {
   Deno.exit()
 }
 
-// try {
-//   const url = "https://utfs.io/f/9277dc6b-914d-46ba-a9bf-91c43aa6870f-2487m.srt";
-//   const response = await fetch(url);
-//   if (!response.ok) throw new Error(`Failed to download file from ${url}`);
-//   text = await response.text();
-// } catch (_e) {
-//   console.log(_e)
-//   Deno.exit()
-// }
 
 //* Create Subtitle Object
 const sub = new Subtitle(text)

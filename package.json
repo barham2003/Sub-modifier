@@ -5,6 +5,7 @@
   "main": "subedit.js",
   "type": "module",
   "scripts": {
+    "server": "deno run --allow-read --allow-net --allow-write --watch  server.ts ",
     "dev": "deno run --allow-read --allow-net --allow-write main.ts ",
     "download": "deno run --allow-read --allow-net --allow-write download.ts "
   },
