@@ -3,6 +3,7 @@ import { Application, Router } from "https://deno.land/x/oak@v16.0.0/mod.ts"
 import { ANIME_SERIES, MOVIE, SERIES } from "./constants.ts";
 import { Subtitle } from "./Subtitle.ts";
 import { MetaData } from "./Metadata.ts";
+import { oakCors } from "https://deno.land/x/cors@v1.2.2/mod.ts";
 
 const router = new Router();
 
@@ -41,6 +42,7 @@ router.post("/", async (context) => {
 });
 
 const app = new Application();
+app.use(oakCors());
 app.use(router.routes());
 app.use(router.allowedMethods());
 
