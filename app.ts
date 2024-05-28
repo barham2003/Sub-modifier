@@ -27,7 +27,7 @@ try {
 const sub = new Subtitle(text)
 
 //* Then generate metadata according to the subtitle and names... 
-const { endingLines, starterLines, header, movedLogos } = new MetaData(sub, "Onimuasha", "محمد دیبالا", "بەرهەم خالید", "series", "ئەڵقەی یەکەم - وەرزی یەکەم")
+const { endingLines, starterLines, header, movedLogos } = new MetaData(sub, "Onimuasha", "Onimusha 1-2", "محمد دیبالا", "بەرهەم خالید", "series", "ئەڵقەی یەکەم - وەرزی یەکەم")
 
 //* Combine all generated things together
 const all = header + starterLines + sub.assBody + endingLines + movedLogos

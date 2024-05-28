@@ -13,7 +13,7 @@ router.post("/", async (context) => {
     const reqBody = await context.request.body.json();
     // ? URL, Name, Type, Translator, Technique, Series Info
 
-    const notValid = !reqBody.name || !reqBody.translator || !reqBody.technique || !reqBody.type
+    const notValid = !reqBody.name || !reqBody.translator || !reqBody.technique || !reqBody.type || !reqBody.corner
     const notValidType = reqBody.type !== SERIES && reqBody.type !== ANIME_SERIES && reqBody.type !== MOVIE
 
 
@@ -31,7 +31,7 @@ router.post("/", async (context) => {
     const sub = new Subtitle(text)
 
     //* Then generate metadata according to the subtitle and names... 
-    const { endingLines, starterLines, header, movedLogos } = new MetaData(sub, reqBody.name, reqBody.translator, reqBody.technique, reqBody.type, reqBody.seriesInfo || null)
+    const { endingLines, starterLines, header, movedLogos } = new MetaData(sub, reqBody.name, reqBody.corner, reqBody.translator, reqBody.technique, reqBody.type, reqBody.seriesInfo || null)
 
     //* Combine all generated things together
     const all = header + starterLines + sub.assBody + endingLines + movedLogos

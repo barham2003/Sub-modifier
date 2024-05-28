@@ -14,6 +14,7 @@ export class MetaData {
     constructor(
         subtitle: Subtitle,
         itemName: string,
+        corner: string,
         translator: string,
         technique: string,
         type: "anime-series" | "series" | "movie" = "movie",
@@ -24,7 +25,7 @@ export class MetaData {
         } else {
             this.lines = generateLines(type, itemName, translator, technique);
         }
-        this.header = generateHeader(type, itemName);
+        this.header = generateHeader(type, corner);
         this.movedLogos = generateMovedLogos(type);
         this.starterLines = this.generateStarterLines(subtitle.firstLineTime);
         this.endingLines = this.generateEndingLines(subtitle.lastLineTime);
