@@ -45,21 +45,8 @@ export class Subtitle {
         }
     }
 
-
-    private formatTime2(time: string) {
-        let [hours, minutes, seconds] = time.split(':');
-        hours = parseInt(hours, 10).toString();
-        minutes = minutes.padStart(2, '0');
-        let [sec, millis] = seconds.split('.');
-        sec = sec.padStart(2, '0');
-        millis = millis.padStart(3, '0').slice(0, 2);
-        return `${hours}:${minutes}:${sec}.${millis}`;
-    };
-
-
     // Format SRT
     private getAss() {
-
         const srtContent = this.text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
 
         // Define the regex pattern for matching SRT blocks
@@ -71,17 +58,27 @@ export class Subtitle {
         // Convert matches to subtitle objects
         const subtitles = matches.map(match => ({
             index: match[1],
-            startTime: match[2].replace(',', '.'),
-            endTime: match[3].replace(',', '.'),
+            startTime: formatTimeToAss(match[2].replace(',', '.')),
+            endTime: formatTimeToAss(match[3].replace(',', '.')),
             text: match[4].replace(/\n/g, '\\N').trim()
         }));
         const assBody = subtitles.map(sub => {
 
 
-            return `Dialogue: 0,${this.formatTime2(sub.startTime)},${this.formatTime2(sub.endTime)},Default,,0,0,0,,${sub.text}`;
+            return `Dialogue: 0,${sub.startTime},${sub.endTime},Default,,0,0,0,,${sub.text}`;
         }).join('\n');
 
         return assBody
     }
 
 }
+
+function formatTimeToAss(time: string) {
+    let [hours, minutes, seconds] = time.split(':');
+    hours = parseInt(hours, 10).toString();
+    minutes = minutes.padStart(2, '0');
+    let [sec, millis] = seconds.split('.');
+    sec = sec.padStart(2, '0');
+    millis = millis.padStart(3, '0').slice(0, 2);
+    return `${hours}:${minutes}:${sec}.${millis}`;
+};
