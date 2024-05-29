@@ -1,3 +1,10 @@
+interface subMatch {
+    index: string
+    startTime: string,
+    endTime: string,
+    text: string,
+}
+
 export class Subtitle {
     readonly text: string;
     readonly firstLineTime: number;
@@ -43,42 +50,33 @@ export class Subtitle {
         }
     }
 
-    // Format SRT
-    private getAss() {
+    //? Format SRT to ASS
+    private getAss(): string {
         const srtContent = this.text.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
 
-        // Define the regex pattern for matching SRT blocks
+        //? Define the regex pattern for matching SRT blocks
         const srtRegex =
             /(\d+)\n(\d{2}:\d{2}:\d{2},\d{3}) --> (\d{2}:\d{2}:\d{2},\d{3})\n([\s\S]*?)(?=\n{2}|\n*$)/g;
 
-        // Get all matches
+        //? Get all Subtitle line matches
         const matches = Array.from(srtContent.matchAll(srtRegex));
 
-        // Convert matches to subtitle objects
-        const subtitles = matches.map((match) => ({
+        //? Convert matches to subtitle objects and prepare it to combine
+        const subtitles: subMatch[] = matches.map((match) => ({
             index: match[1],
-            startTime: formatTimeToAss(match[2].replace(",", ".")),
-            endTime: formatTimeToAss(match[3].replace(",", ".")),
-            text: match[4].replace(/\n/g, "\\N").trim(),
+            startTime: formatTimeToAss(match[2]),
+            endTime: formatTimeToAss(match[3]),
+            text: formatTextToAss(match[4]),
         }));
 
-        // ? Start Converting
-        const assBody = subtitles
-            .map((sub) => {
-                return `Dialogue: 0,${sub.startTime},${sub.endTime},Default,,0,0,0,,${sub.text}`;
-            })
-            .join("\n")                     //? Join Them Together 
-            .replaceAll("<i>", "{\\i1}")    //? Start Replacing
-            .replaceAll("</i>", "{\\i0}")
-            .replace(/<font color="#([0-9a-fA-F]{6})">([\s\S]*?)<\/font>/g, (_, color, content) => {
-                const bgrColor = color.substring(4, 6) + color.substring(2, 4) + color.substring(0, 2);
-                return `{\\c&H${bgrColor}&}${content}`;
-            });
-        return assBody + "\n";
+        // ? Combine it
+        const assBody = combineTextTimeAss(subtitles);
+        return assBody;
     }
 }
 
 function formatTimeToAss(time: string) {
+    time = time.replace(",", ".");
     let [hours, minutes, seconds] = time.split(":");
     hours = parseInt(hours, 10).toString();
     minutes = minutes.padStart(2, "0");
@@ -86,4 +84,32 @@ function formatTimeToAss(time: string) {
     sec = sec.padStart(2, "0");
     millis = millis.padStart(3, "0").slice(0, 2);
     return `${hours}:${minutes}:${sec}.${millis}`;
+}
+
+function formatTextToAss(text: string) {
+    const convertedText = text
+        .replaceAll(/\n/g, "\\N")
+        .replaceAll("<i>", "{\\i1}") //? Start Replacing
+        .replaceAll("</i>", "{\\i0}")
+        .replaceAll(
+            /<font color="#([0-9a-fA-F]{6})">([\s\S]*?)<\/font>/g,
+            (_, color, content) => {
+                const bgrColor =
+                    color.substring(4, 6) + color.substring(2, 4) + color.substring(0, 2);
+                return `{\\c&H${bgrColor}&}${content}`;
+            }
+        )
+        .trim();
+
+    return convertedText;
+}
+
+function combineTextTimeAss(subtitles: subMatch[]): string {
+    const convertedSubtitles = subtitles
+        .map((sub) => {
+            return `Dialogue: 0,${sub.startTime},${sub.endTime},Default,,0,0,0,,${sub.text}`;
+        })
+        .join("\n"); //? Join Them Together
+
+    return convertedSubtitles + "\n";
 }

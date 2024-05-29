@@ -8,7 +8,6 @@ export class MetaData {
     readonly endingLines: string;
     readonly header: string;
     readonly movedLogos: string
-
     private readonly lines: string[];
 
     constructor(
@@ -46,7 +45,7 @@ export class MetaData {
     }
 
     generateEndingLines(lastLineTime: number) {
-        let secondTimeCounter = 0;
+        let secondTimeCounter = 1;
         const endLines = this.lines
             .map((line) => {
                 const startTime = formatTime(lastLineTime + secondTimeCounter);
